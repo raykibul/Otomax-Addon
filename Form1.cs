@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace Otomax_Addon
 {
@@ -16,6 +17,7 @@ namespace Otomax_Addon
     {
         List<Request> myRequestCodes = new List<Request>();
         string coded_number, coded_amount, main_number;
+       
 
         public MainFrom()
         {
@@ -24,6 +26,8 @@ namespace Otomax_Addon
 
         private void MainFrom_Load(object sender, EventArgs e)
         {
+            
+
             Connection connection = new  Connection();
             SqlConnection conn = connection.Open();
             if(conn==null)
@@ -38,12 +42,15 @@ namespace Otomax_Addon
                 statuslabel.Text = myRequestCodes.Count+" Codes";
             }
             conn.Close();
- 
+            inboxTimer.Start();
 
         }
 
+     
+
         private void homeToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            helpPanel.Visible = false;
 
         }
 
@@ -79,10 +86,16 @@ namespace Otomax_Addon
         private void button1_Click(object sender, EventArgs e)
         {
             inboxTimer.Stop();
+            startButton.Enabled = true;
         }
 
         private void inboxTimer_Tick(object sender, EventArgs e)
         {
+            if (startButton.Enabled)
+            {
+                startButton.Enabled = false;
+            }
+
             if (MyWorker.IsBusy)
                 return;
             else
@@ -102,8 +115,7 @@ namespace Otomax_Addon
         {
             Connection connection = new Connection();
             SqlConnection conn = connection.Open();
-
-            string sql = "select TOP 1 *  from inbox where kode_reseller <> 'NULL' and addons='0' order by kode ASC ";
+            string sql = "select TOP 1 *  from inbox where kode_reseller <> 'NULL' and addons='0' order by kode DESC ";
             SqlCommand command;
             SqlDataReader readear;
             command = new SqlCommand(sql, conn);
@@ -130,7 +142,7 @@ namespace Otomax_Addon
 
             }
 
-            ShowUpdate("Reading Completed!!");
+            ShowUpdate("Inbox Check Completed!!");
 
             readear.Close();
             conn.Close();
@@ -193,6 +205,27 @@ namespace Otomax_Addon
             Application.Restart();
         }
 
+        private void tutorialToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            helpPanel.Visible = true;
+            helpRichTextbox.Text = "১। আপনার কম্পিউটার এর মধ্যে অবশ্যই otomax সফটওয়ার ইনস্টল করা থাকতে হবে\n" +
+                "২। প্রথমে addons এর জন্য একটি টেবিল sql server এ করে নিতে হবে\n" +
+                "৩। এর পর inbox table এ addons কলাম যোগ করা লাগবে\n" +
+                "৪। settings অপশনে গিয়ে আপনার নতুন কোড এড করার অপশনে যাবেন\n" +
+                "৫। number code এর জায়গায় আপনার রিসেলার যেই কোড লিখবে সেটা লিখুন\n" +
+                "৬। replace code এর জায়গায় লিখুন অটোম্যাক্স এ যেই কোড যাবে। \n" +
+                "৭। সেভ করুন ";
+
+
+        }
+
+       
+
+        private void developerInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://youtube.com/rakibulislamcse");
+        }
+
         private bool IsRequest(String msg)
         {
             coded_number = "";
@@ -203,7 +236,7 @@ namespace Otomax_Addon
            
             if (codes.Length < 2)
             { 
-                ShowUpdate("Not Valid Req!");
+                ShowUpdate("Not Valid Requset Msg!");
                 return false;
 
             }else if (codes.Length == 2)
