@@ -96,12 +96,15 @@ namespace Otomax_Addon
                 startButton.Enabled = false;
             }
 
-            if (MyWorker.IsBusy)
-                return;
-            else
-            {
-                MyWorker.RunWorkerAsync();
-            }
+            /* if (MyWorker.IsBusy)
+                 return;
+             else
+             {
+                 MyWorker.RunWorkerAsync();
+             }*/
+
+            CallCheckInboxasync();
+
 
         }
 
@@ -111,7 +114,21 @@ namespace Otomax_Addon
             CheckInbox();
         }
 
-        private void CheckInbox()
+
+        private async void CallCheckInboxasync()
+        {
+            var result = await CheckInboxAsyncMethod();
+            ShowUpdate(result);
+        }
+
+        private Task<String> CheckInboxAsyncMethod()
+        {
+            return Task.Factory.StartNew(()=>CheckInbox()); 
+        }
+
+
+
+        private String CheckInbox()
         {
             Connection connection = new Connection();
             SqlConnection conn = connection.Open();
@@ -120,6 +137,7 @@ namespace Otomax_Addon
             SqlDataReader readear;
             command = new SqlCommand(sql, conn);
             readear = command.ExecuteReader();
+
             while (readear.Read())
             {
                 String id, pesan;
@@ -130,32 +148,32 @@ namespace Otomax_Addon
                   for(int i = 0; i < myRequestCodes.Count; i++)
                     { if (myRequestCodes[i].number_code.Equals(coded_number,StringComparison.InvariantCultureIgnoreCase))
                         {
-                            CreateResponseAndUpdate(id,myRequestCodes[i].replace_code);
-                            break;
+                            conn.Close();
+                            return CreateResponseAndUpdate(id,myRequestCodes[i].replace_code);
+                          
                         }
                   }
                 }
                 else
                 {
-                    UpdateAddonsFalse(id);
+                   conn.Close();
+                   return UpdateAddonsFalse(id);
                 }
 
             }
-
-            ShowUpdate("Inbox Check Completed!!");
-
             readear.Close();
             conn.Close();
+
+            return "No New Msg Found!! ";
+           
               
         }
 
-        private void CreateResponseAndUpdate(string id,string pcode)
+        private string CreateResponseAndUpdate(string id,string pcode)
         {
             String response = "";
             response = pcode + "*" + main_number + "*" + coded_amount;
-            ShowUpdate("Response: "+response);
-
-
+             
             Connection connection = new Connection();
             SqlConnection conn = connection.Open();
             string sql = "update inbox set addons='1',pesan='"+response+"',status='0' where kode='"+id+"'";
@@ -164,21 +182,21 @@ namespace Otomax_Addon
             int result = command.ExecuteNonQuery();
             if (result == 1)
             {
-                ShowUpdate(response+" updated!!");
                 conn.Close();
-
+                return response+" updated!!";
+                 
             }
             else
-            {
-                ShowUpdate("addons Not updated!! Restart please");
+            { 
                 conn.Close();
+                return "addons Not updated!! Restart please";     
             }
 
 
 
         }
 
-        private void UpdateAddonsFalse(string id)
+        private string UpdateAddonsFalse(string id)
         {
             Connection connection = new Connection();
             SqlConnection conn = connection.Open();
@@ -188,14 +206,16 @@ namespace Otomax_Addon
             int result = command.ExecuteNonQuery();
             if (result == 1)
             {
-                  ShowUpdate("addons updated!!");
-                  conn.Close();
+                conn.Close();
+                return " 1 msg updated!!";
+                 
                  
             }
             else
             {
-                ShowUpdate("addons Not updated!! Restart please");
                 conn.Close();
+                return "addons Not updated!! Restart please";
+                
             }
 
         }
@@ -236,12 +256,11 @@ namespace Otomax_Addon
            
             if (codes.Length < 2)
             { 
-                ShowUpdate("Not Valid Requset Msg!");
-                return false;
+                 return false;
 
             }else if (codes.Length == 2)
             {
-                ShowUpdate(msg+" Replacing Req Codes!!");
+                 
 
                 coded_amount = codes[1];
                 string num = codes[0];
@@ -281,7 +300,7 @@ namespace Otomax_Addon
                  return true;
             }else if (codes.Length == 3)
             {
-                ShowUpdate("Requst codes Already Completed!!");
+                
                 return false;
             }
 

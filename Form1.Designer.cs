@@ -40,7 +40,6 @@
             this.statuslabel = new System.Windows.Forms.Label();
             this.startButton = new System.Windows.Forms.Button();
             this.statusBox = new System.Windows.Forms.RichTextBox();
-            this.MyWorker = new System.ComponentModel.BackgroundWorker();
             this.inboxTimer = new System.Windows.Forms.Timer(this.components);
             this.button1 = new System.Windows.Forms.Button();
             this.restartButton = new System.Windows.Forms.Button();
@@ -106,14 +105,14 @@
             // tutorialToolStripMenuItem
             // 
             this.tutorialToolStripMenuItem.Name = "tutorialToolStripMenuItem";
-            this.tutorialToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.tutorialToolStripMenuItem.Size = new System.Drawing.Size(178, 24);
             this.tutorialToolStripMenuItem.Text = "Tutorial";
             this.tutorialToolStripMenuItem.Click += new System.EventHandler(this.tutorialToolStripMenuItem_Click);
             // 
             // developerInfoToolStripMenuItem
             // 
             this.developerInfoToolStripMenuItem.Name = "developerInfoToolStripMenuItem";
-            this.developerInfoToolStripMenuItem.Size = new System.Drawing.Size(180, 24);
+            this.developerInfoToolStripMenuItem.Size = new System.Drawing.Size(178, 24);
             this.developerInfoToolStripMenuItem.Text = "Developer info";
             this.developerInfoToolStripMenuItem.Click += new System.EventHandler(this.developerInfoToolStripMenuItem_Click);
             // 
@@ -145,13 +144,9 @@
             this.statusBox.TabIndex = 4;
             this.statusBox.Text = "";
             // 
-            // MyWorker
-            // 
-            this.MyWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.MyWorker_DoWork);
-            // 
             // inboxTimer
             // 
-            this.inboxTimer.Interval = 2000;
+            this.inboxTimer.Interval = 3000;
             this.inboxTimer.Tick += new System.EventHandler(this.inboxTimer_Tick);
             // 
             // button1
@@ -228,7 +223,6 @@
         private System.Windows.Forms.Label statuslabel;
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.RichTextBox statusBox;
-        private System.ComponentModel.BackgroundWorker MyWorker;
         private System.Windows.Forms.Timer inboxTimer;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button restartButton;
