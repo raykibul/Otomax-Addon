@@ -296,8 +296,27 @@ namespace Otomax_Addon
                     main_number = num.Substring(3, 11);
                     coded_number = num.Substring(0, 3);
 
-                } 
-                 return true;
+                }else if (num.Length == 15)
+                {
+                    main_number = num.Substring(4,11);
+                    coded_number = num.Substring(0,4);
+                }else if (num.Length == 16)
+                {
+                    main_number = num.Substring(5, 11);
+                    coded_number = num.Substring(0, 5);
+                }
+                else if (num.Length == 17)
+                {
+                    main_number = num.Substring(6, 11);
+                    coded_number = num.Substring(0, 6);
+                }
+                else if (num.Length == 18)
+                {
+                    main_number = num.Substring(7, 11);
+                    coded_number = num.Substring(0, 7);
+                }  
+                
+                return true;
             }else if (codes.Length == 3)
             {
                 
